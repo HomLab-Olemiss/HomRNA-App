@@ -101,6 +101,20 @@ server <- function(input,output,session)
     ret
   })
   
+  readDEGList <- reactive({
+    ret <- NULL
+    inFile <- input$DEGList
+    if (!is.null(inFile))  {
+      withProgress(message = 'Reading the data',
+                   detail = "This may take a while", value = 0, {
+                     ret <-  read_csv(inFile$datapath, col_types = readr::cols())
+                     setProgress(1, detail = paste("Completed"))
+                   }
+      )
+    }
+    ret
+  })
+  
   checkDataInput <- function(data){
     if(is.null(data)) return(NULL)
     if("status" %in% colnames(data)) data$status <- NULL

@@ -697,6 +697,59 @@ ui <- fluidPage(title = "HomRNA",
                            )
 
                   ),
+                  
+                  tabPanel("Gene Extraction for Post-Analysis",
+                           icon = icon("brain"),
+                           column(2,
+                                  dropdown(label = "DEG with Annotation Upload",
+                                           icon = icon("file-csv"),
+                                           style = "bordered", 
+                                           status = "primary", 
+                                           width = "300px",
+                                           size =  "sm",
+                                           animate = animateOptions(
+                                             enter = animations$fading_entrances$fadeInLeftBig,
+                                             exit = animations$fading_exits$fadeOutLeft
+                                           ),
+                                           fileInput("DEGList", "Choose CSV File",
+                                                     multiple = TRUE,
+                                                     accept = c("text/csv",
+                                                                "text/comma-separated-values,text/plain",
+                                                                ".csv"))
+                                           ),
+                           dropdown(label = "Keyword Extraction",
+                                    icon = icon("calculator"),
+                                    style = "bordered", 
+                                    size =  "sm",
+                                    status = "primary", 
+                                    width = "300px",
+                                    animate = animateOptions(
+                                      enter = animations$fading_entrances$fadeInLeftBig,
+                                      exit = animations$fading_exits$fadeOutLeft
+                                    ),
+                                    textInput("extractName", 
+                                              "Dataset Name"),
+                                    textInput("term1", 
+                                              "1st Search Term"),
+                                    textInput("term2", 
+                                              "2nd Search Term"),
+                                    textInput("term3", 
+                                              "3rd Search Term"),
+                                    textInput("term4", 
+                                              "4th Search Term"),
+                                    textInput("term5", 
+                                              "5th Search Term"),
+                                    textInput("term6", 
+                                              "6th Search Term"),
+                                    textInput("term7", 
+                                              "7th Search Term"),
+                                    actionButton("extraction", "Perform Gene Extraction", class = "btn-primary"),
+                                    actionButton("clearExtraction", "Clear Searches", class = "btn-primary")
+                                    )
+                           ),
+
+                  ),
+                  
 
                   #Need to make your own custom help documents
                   tabPanel("Help", ##changing from tab 2, but still usibg tab2 in other parts of code
