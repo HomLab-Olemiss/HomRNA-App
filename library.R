@@ -38,7 +38,8 @@ list.of.packages <- c("Glimma",
                       "hrbrthemes",
                       "tm",
                       "proustr",
-                      "VennDiagram")
+                      "VennDiagram",
+                      "stringr")
 
 #checking missing packages from list
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
@@ -93,6 +94,7 @@ suppressPackageStartupMessages({
   library(tm)
   library(proustr)
   library(VennDiagram)
+  library(stringr)
 })
 
 # default input file

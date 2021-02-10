@@ -407,26 +407,10 @@ server <- function(input,output,session)
     tbl.tab1 <- getTab1.selected()$tab
     selected_rows <- getTab1.selected()$selected_rows
     if(is.null(tbl.tab1)) return(NULL)
-    ######### sorting by mean and sd ##################### ....fucks up the select sorting thing...
-    #if(input$select_sort_tab1 == "-no selection-") {return(tbl.tab1)}
-    #if(input$select_sort_tab1 == "mean")
-    #{
-    # tbl.tab1 <- tbl.tab1[order(apply(tbl.tab1[,8:dim(tbl.tab1)[2]],1,mean), decreasing = TRUE),]
-    #}
-    #if(input$select_sort_tab1 == "standard deviation")
-    #{
-    # tbl.tab1 <- tbl.tab1[order(apply(tbl.tab1[,8:dim(tbl.tab1)[2]],1,sd), decreasing = TRUE),]
-    #}
-    
-    ######## this section sorts the table so that selected rows are first #######
-    ####### ordering rows like this makes the selection wonky in the figures, other rows than what you select are being displayed
-    ####### try taking this out to see how tables are rendered...or not rendered???
+
     tbl.tab1 %>% createTable(selected_rows,tableType = isolate({input$select_tab1}))
     
-    ## try adding the genes list to match() here, see if it breaks the app
-    ##gene_list_tab1 <- input$input_gene_list_tab1 ##create object here see if it breaks the app.....yup breaks the app
-    
-  }) ##works to get selected rows on top but fucks up if select more than one at a time.....worry about it later
+  }) 
   
   sel <- reactive({!is.null(input$tbl.tab1_rows_selected)})  
   
@@ -1713,6 +1697,83 @@ server <- function(input,output,session)
     }
     return(p)
   })
+  #---------------------------------
+  # Gene Extraction for Post-analysis tab
+  #---------------------------------
+  extract.Data.fromDEG <- reactive({
+    DEGData <- readDEGList()
+    if(!is.null(input$extractName)) {
+      if (!is.null(input$term1)) {
+        pat1 <- input$term1        
+      }
+      else {
+        pat1 <- NULL
+      }
+      if (!is.null(input$term2)) {
+        pat2 <- input$term2        
+      }
+      else {
+        pat2 <- NULL
+      }
+      if (!is.null(input$term3)) {
+        pat3 <- input$term3        
+      }
+      else {
+        pat3 <- NULL
+      }
+      if (!is.null(input$term4)) {
+        pat4 <- input$term4        
+      }
+      else {
+        pat4 <- NULL
+      }
+      if (!is.null(input$term5)) {
+        pat5 <- input$term5        
+      }
+      else {
+        pat5 <- NULL
+      }
+      if (!is.null(input$term6)) {
+        pat6 <- input$term6        
+      }
+      else {
+        pat6 <- NULL
+      }
+      if (!is.null(input$term7)) {
+        pat7 <- input$term7        
+      }
+      else {
+        pat7 <- NULL
+      }
+      inputs <- c(pat1,pat2,pat3,pat4,pat5,pat6,pat7)
+      inputs <- inputs[inputs != ""]
+      extractOutput <- filter_all(DEGData, any_vars(str_detect(., pattern= regex(paste(inputs,collapse="|"), ignore_case=TRUE))))
+    }
+    return(extractOutput)
+  })
+  
+    output$tbl.tab3 <-  DT::renderDataTable({
+    DEGData <- readDEGList()
+    if(is.null(DEGData)) {
+      return(NULL)
+    }
+    DEGData %>% createTable(show.rownames=T)
+  })
+
+  output$outputExtractionFile <- downloadHandler(
+    filename= function() {
+      paste("DEG Extraction Output",".xlsx",sep="")
+    },
+    content= function(fname) {
+      extractOutput <- extract.Data.fromDEG()
+      sheet <- input$extractName
+      wb <- createWorkbook()
+      addWorksheet(wb=wb, sheetName=sheet, gridLines=FALSE)
+      writeDataTable(wb=wb, sheet=1, x=extractOutput)
+      saveWorkbook(wb, fname, overwrite=TRUE)
+    }
+  )
+  
   #---------------------------------
   # Venn Diagram plot tab
   #---------------------------------

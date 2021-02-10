@@ -711,7 +711,7 @@ ui <- fluidPage(title = "HomRNA",
                                              enter = animations$fading_entrances$fadeInLeftBig,
                                              exit = animations$fading_exits$fadeOutLeft
                                            ),
-                                           fileInput("DEGList", "Choose CSV File",
+                                           fileInput("DEGList", "Choose CSV File (Note: 5 MB max)",
                                                      multiple = TRUE,
                                                      accept = c("text/csv",
                                                                 "text/comma-separated-values,text/plain",
@@ -728,7 +728,7 @@ ui <- fluidPage(title = "HomRNA",
                                       exit = animations$fading_exits$fadeOutLeft
                                     ),
                                     textInput("extractName", 
-                                              "Dataset Name"),
+                                              "Dataset Name (required)"),
                                     textInput("term1", 
                                               "1st Search Term"),
                                     textInput("term2", 
@@ -743,14 +743,15 @@ ui <- fluidPage(title = "HomRNA",
                                               "6th Search Term"),
                                     textInput("term7", 
                                               "7th Search Term"),
-                                    actionButton("extraction", "Perform Gene Extraction", class = "btn-primary"),
-                                    actionButton("clearExtraction", "Clear Searches", class = "btn-primary")
+                                    downloadButton("outputExtractionFile", "Output Final File", class = "btn-primary")
                                     )
                            ),
 
                   ),
                   
-
+                  column(10,
+                         DT::dataTableOutput('tbl.tab3') 
+                  ),
                   #Need to make your own custom help documents
                   tabPanel("Help", ##changing from tab 2, but still usibg tab2 in other parts of code
                            #icon = icon("object-group"),
